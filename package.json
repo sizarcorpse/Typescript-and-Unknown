@@ -1,0 +1,19 @@
+{
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/server.js",
+    "dev": "npm run clean && tsc && concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
+    "clean": "rimraf dist/",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.6",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "rimraf": "^5.0.5"
+  }
+}
