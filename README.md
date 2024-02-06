@@ -18,6 +18,7 @@
   - [Generic Type Constraints](#generic-type-constraints)
   - [Default Generic Arguments](#default-generic-arguments)
   - [Mapped Object Types](#mapped-object-types)
+  - [Type Unions](#type-unions)
 
 ## Primitive Data Types
 
@@ -611,3 +612,57 @@ type Example = ProductCategoryInfo<ProductCategories>;
 
 // The` ProductCategoryInfo<T>` mapped type might be more useful in a scenario where you want to apply some transformation to the properties of `T`. For example, if you wanted to make all properties optional, you could define `ProductCategoryInfo<T>`.
 ```
+
+## Type Unions
+
+✨ A type union in TypeScript is a way to define a type that can be one of several different types. It's a way to combine multiple types into a single type that can represent any of the individual types.
+
+⚒️ Use type unions when you want to define a type that can be one of several different types. They are often used in situations where a variable can take on multiple types, or when you want to create a more flexible type.
+
+- Using Type Unions:
+
+  ```typescript
+  type ID = string | number;
+  type Name = string;
+  type Age = number;
+  type User = { id: ID; name: Name; age: Age };
+  ```
+
+- Using Type Unions with Literal Types:
+
+  ```typescript
+  type Status = "ok" | "error" | "unauthorized" | "unauthenticated";
+  type Count = number;
+  type Response = { status: Status; data: any; count: Count };
+  ```
+
+- Using Type Unions with Object Types:
+
+  ```typescript
+  type User = { id: string; name: string };
+  type Admin = { id: string; role: string };
+  type Person = User | Admin;
+  ```
+
+- Using Type Unions with Function Types:
+
+  ```typescript
+  type Callback = (error: Error, response: object) => void;
+  type PromiseCallback = (error: Error, response: object) => Promise<void>;
+  type AnyCallback = Callback | PromiseCallback;
+
+  let callback: AnyCallback = (error: Error, response: object) => {
+    console.log(error, response);
+  };
+  ```
+
+- Using Type Unions with Generic Types:
+
+  ```typescript
+  type Container<T> = { value: T };
+  type NumberContainer = Container<number>;
+  type StringContainer = Container<string>;
+  type AnyContainer = NumberContainer | StringContainer;
+
+  let container: AnyContainer = { value: "hello" };
+  ```
