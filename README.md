@@ -14,6 +14,10 @@
   - [`keyof` Operator](#keyof-operator)
   - [Generic Type Arguments](#generic-type-arguments)
     - [Multiple Generic Arguments](#multiple-generic-arguments)
+  - [Generic Function Arguments](#generic-function-arguments)
+  - [Generic Type Constraints](#generic-type-constraints)
+  - [Default Generic Arguments](#default-generic-arguments)
+  - [Mapped Object Types](#mapped-object-types)
 
 ## Primitive Data Types
 
@@ -418,4 +422,192 @@ function pair<T, U>(first: T, second: U): [T, U] {
 }
 
 let result = pair<string, number>("apple", 10);
+```
+
+## Generic Function Arguments
+
+"Generic Type Arguments" and "Generic Function Arguments" are related concepts, but they refer to slightly different things:
+
+- Generic Type Arguments refer to the types that you pass to a generic function, class, or interface. For example, in `Array<number>`, `number` is a generic type argument.
+- Generic Function Arguments refer to the actual values that you pass to a generic function. For example, in `identity<number>(123)`, `123` is a generic function argument.
+
+✨ Generic Function Arguments in TypeScript refers to the use of type variables as arguments in a function. This allows the function to handle a variety of types while maintaining type safety. The type variable is defined in the function declaration and can be used to type the function's arguments and return value.
+
+⚒️ Use Generic Function Arguments when you want to write a function that can handle a variety of types, but you still want to maintain type safety. This is useful when you want to write reusable code.
+
+- Generic Identity Function:
+
+  ```typescript
+  function identity<T>(arg: T): T {
+    return arg;
+  }
+  ```
+
+- Generic Array Function:
+
+  ```typescript
+  function createArray<T>(length: number, value: T): Array<T> {
+    let result: T[] = [];
+    for (let i = 0; i < length; i++) {
+      result[i] = value;
+    }
+    return result;
+  }
+  let array = createArray<string>(3, "x");
+  ```
+
+- Generic Property Function:
+
+  ```typescript
+  function getProperty<T, K extends keyof T>(obj: T, key: K) {
+    return obj[key];
+  }
+  let person = { name: "Sizar", age: 30 };
+  let name = getProperty(person, "name");
+  let age = getProperty(person, "age");
+  ```
+
+## Generic Type Constraints
+
+✨ Generic type constraints allow you to restrict the types that can be used with a generic type. This is done by using the `extends` keyword to specify that a type must extend a certain type or implement a certain interface.
+
+⚒️ Generic type constraints are used when you want to restrict the types that can be used with a generic type. They are often used in functions, classes, and interfaces to ensure that the types used with them meet certain requirements.
+
+- Use the `extends` keyword to define a constraint.
+
+  ```typescript
+  function identity<T extends string>(arg: T): T {
+    return arg;
+  }
+  ```
+
+- Use an interface to define a constraint.
+
+  ```typescript
+  interface HasLength {
+    length: number;
+  }
+
+  function identity<T extends HasLength>(arg: T): T {
+    console.log(arg.length);
+    return arg;
+  }
+  ```
+
+- Use multiple constraints by using an intersection type.
+
+  ```typescript
+  interface HasLength {
+    length: number;
+  }
+
+  interface HasName {
+    name: string;
+  }
+
+  function identity<T extends HasLength & HasName>(arg: T): T {
+    console.log(arg.length);
+    console.log(arg.name);
+    return arg;
+  }
+  ```
+
+## Default Generic Arguments
+
+✨ Default generic arguments in TypeScript allow you to specify a default type for a generic type parameter. This means that if a type argument is not provided when using the generic type, the default type will be used instead.
+
+⚒️ Default generic arguments are used when you want to provide a default type for a generic type parameter. They are often used in functions, classes, and interfaces to provide a default type for a type parameter.
+
+- Default Generic Argument in a Function:
+
+  ```typescript
+  function defaultArgFunction<T = number>(arg: T): T {
+    return arg;
+  }
+  let output = defaultArgFunction("myString");
+  let defaultOutput = defaultArgFunction();
+  ```
+
+- Default Generic Argument with Multiple Types:
+
+  ```typescript
+  function defaultArgsFunction<T = number, U = string>(
+    arg1: T,
+    arg2: U
+  ): [T, U] {
+    return [arg1, arg2];
+  }
+  let output = defaultArgsFunction<boolean, boolean>(true, false);
+  let defaultOutput = defaultArgsFunction(); // T is number, U is string
+  ```
+
+## Mapped Object Types
+
+✨ Mapped Object Types in TypeScript are a way to create new types from old ones by transforming properties. They are defined by the syntax `{ [K in Keys]: Type }`. Here, Keys can be a type representing a set of strings or numbers (like `"a" | "b"`), and `Type` is the type to be transformed.
+
+⚒️ Use Mapped Object Types when you want to create a new type based on the properties of an existing type, especially when you want to apply a certain transformation to the properties of the existing type.
+
+💡 Mapped Object Types help to make your code more reusable and maintainable by allowing you to create new types based on the properties of existing types. They are often used in situations where you want to create a new type that is similar to an existing type, but with some modifications.
+
+- Making All Properties Readonly:
+
+  ```typescript
+  type Readonly<T> = {
+    readonly [K in keyof T]: T[K];
+  };
+  let person: Readonly<{ name: string; age: number }> = {
+    name: "Sizar",
+    age: 30,
+  };
+  ```
+
+- Making All Properties Optional:
+
+  ```typescript
+  type Partial<T> = {
+    [K in keyof T]?: T[K];
+  };
+  let person: Partial<{ name: string; age: number }> = {
+    name: "Sizar",
+  };
+  ```
+
+- Picking Certain Properties from a Type:
+
+  ```typescript
+  type Pick<T, K extends keyof T> = {
+    [P in K]: T[P];
+  };
+
+  let person: Pick<{ name: string; age: number }, "name"> = {
+    name: "Sizar",
+  };
+  ```
+
+- Removing Certain Properties from a Type:
+
+  ```typescript
+  type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+  let person: Omit<{ name: string; age: number }, "name"> = {
+    age: 30,
+  };
+  ```
+
+```typescript
+type ProductCategories = {
+  electronics: "Electronics";
+  clothing: "Clothing";
+  books: "Books";
+};
+
+type ProductCategoryInfo<T> = {
+  [K in keyof T]: T[K];
+};
+
+type Example = ProductCategoryInfo<ProductCategories>;
+
+// `ProductCategories` and `Example` are indeed the same type. The `ProductCategoryInfo<T>` mapped type is essentially a pass-through that doesn't change the type in any way.
+
+// The` ProductCategoryInfo<T>` mapped type might be more useful in a scenario where you want to apply some transformation to the properties of `T`. For example, if you wanted to make all properties optional, you could define `ProductCategoryInfo<T>`.
 ```
