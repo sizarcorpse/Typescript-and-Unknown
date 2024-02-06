@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>TypeScript And Unknown</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="docs/pandoc.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">TypeScript And Unknown</h1>
+</header>
+<h1 id="typescript">TypeScript</h1>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#typescript">TypeScript</a>
+<ul>
+<li><a href="#table-of-contents">Table of Contents</a></li>
+<li><a href="#primitive-data-types">Primitive Data Types</a></li>
+<li><a href="#type-aliases"><code>type</code> Aliases</a></li>
+<li><a href="#literal-types">Literal Types</a>
+<ul>
+<li><a href="#literal-types-for-returns">Literal Types For
+Returns</a></li>
+</ul></li>
+<li><a href="#index-signatures">Index Signatures</a></li>
+<li><a href="#typeof-operator"><code>typeof</code> Operator</a></li>
+<li><a href="#indexed-types">Indexed Types</a></li>
+<li><a href="#keyof-operator"><code>keyof</code> Operator</a></li>
+<li><a href="#generic-type-arguments">Generic Type Arguments</a>
+<ul>
+<li><a href="#multiple-generic-arguments">Multiple Generic
+Arguments</a></li>
+</ul></li>
+<li><a href="#generic-function-arguments">Generic Function
+Arguments</a></li>
+<li><a href="#generic-type-constraints">Generic Type
+Constraints</a></li>
+<li><a href="#default-generic-arguments">Default Generic
+Arguments</a></li>
+<li><a href="#mapped-object-types">Mapped Object Types</a></li>
+<li><a href="#type-unions">Type Unions</a></li>
+</ul></li>
+</ul>
+<h2 id="primitive-data-types">Primitive Data Types</h2>
+<ul>
+<li><code>number</code></li>
+<li><code>string</code></li>
+<li><code>boolean</code></li>
+<li><code>null</code></li>
+<li><code>undefined</code></li>
+<li><code>symbol</code></li>
+<li><code>bigint</code></li>
+<li><code>object</code></li>
+<li><code>never</code></li>
+<li><code>any</code></li>
+<li><code>unknown</code></li>
+</ul>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> a<span class="op">:</span> <span class="dt">number</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> b<span class="op">:</span> <span class="dt">string</span> <span class="op">=</span> <span class="st">&quot;hello&quot;</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> c<span class="op">:</span> <span class="dt">boolean</span> <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> d<span class="op">:</span> <span class="dt">null</span> <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> e<span class="op">:</span> <span class="dt">undefined</span> <span class="op">=</span> <span class="kw">undefined</span><span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> f<span class="op">:</span> <span class="dt">symbol</span> <span class="op">=</span> <span class="bu">Symbol</span>(<span class="st">&quot;foo&quot;</span>)<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> g<span class="op">:</span> <span class="dt">bigint</span> <span class="op">=</span> <span class="dv">100</span>n<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> h<span class="op">:</span> <span class="dt">object</span> <span class="op">=</span> { foo<span class="op">:</span> <span class="st">&quot;bar&quot;</span> }<span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> i<span class="op">:</span> <span class="dt">never</span> <span class="op">=</span> (() <span class="kw">=&gt;</span> {</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="st">&quot;error&quot;</span>)<span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>})()<span class="op">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> j<span class="op">:</span> <span class="dt">any</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> k<span class="op">:</span> <span class="dt">unknown</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">// example</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="dv">2</span><span class="op">;</span> <span class="co">// ok</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="st">&quot;hello&quot;</span><span class="op">;</span> <span class="co">// error</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="st">&quot;world&quot;</span><span class="op">;</span> <span class="co">// ok</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="dv">2</span><span class="op">;</span> <span class="co">// error</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> <span class="kw">true</span><span class="op">;</span> <span class="co">// ok</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> <span class="kw">false</span><span class="op">;</span> <span class="co">// ok</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="kw">null</span><span class="op">;</span> <span class="co">// ok</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="kw">undefined</span><span class="op">;</span> <span class="co">// error</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>e <span class="op">=</span> <span class="kw">undefined</span><span class="op">;</span> <span class="co">// ok</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>e <span class="op">=</span> <span class="kw">null</span><span class="op">;</span> <span class="co">// error</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="bu">Symbol</span>(<span class="st">&quot;foo&quot;</span>)<span class="op">;</span> <span class="co">// ok</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="bu">Symbol</span>(<span class="st">&quot;bar&quot;</span>)<span class="op">;</span> <span class="co">// ok</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> <span class="dv">100</span>n<span class="op">;</span> <span class="co">// ok</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> <span class="dv">100</span><span class="op">;</span> <span class="co">// error</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> { foo<span class="op">:</span> <span class="st">&quot;bar&quot;</span> }<span class="op">;</span> <span class="co">// ok</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> { bar<span class="op">:</span> <span class="st">&quot;foo&quot;</span> }<span class="op">;</span> <span class="co">// ok</span></span></code></pre></div>
+<h2 id="type-aliases"><code>type</code> Aliases</h2>
+<p>✨ In TypeScript, a type alias is a way to give a new name to a type.
+It’s like creating a new identifier that you can use in place of an
+existing type.</p>
+<p>⚒️ <code>type</code> aliases are used when you want to avoid typing
+long type annotations, encapsulate complex types into a single
+identifier, or create more meaningful and readable code. They are
+particularly useful when working with complex types that are used
+repeatedly throughout your code.</p>
+<p>💡<code>type</code> aliases help to make your code more readable and
+maintainable. They allow you to encapsulate complex types into a single
+identifier, which can make your code easier to understand. They also
+help to reduce redundancy in your code by allowing you to define a type
+once and then reuse it throughout your code</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Primitive type</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> ID <span class="op">=</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Name <span class="op">=</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Complex type</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> User <span class="op">=</span> {</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  id<span class="op">:</span> ID<span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  name<span class="op">:</span> Name<span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  email<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">// Union type</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> WindowStates <span class="op">=</span> <span class="st">&quot;open&quot;</span> <span class="op">|</span> <span class="st">&quot;closed&quot;</span> <span class="op">|</span> <span class="st">&quot;minimized&quot;</span><span class="op">;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">// Function type</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Callback <span class="op">=</span> (error<span class="op">:</span> <span class="bu">Error</span><span class="op">,</span> response<span class="op">:</span> <span class="dt">object</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">// Generic type</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Container<span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">=</span> { value<span class="op">:</span> T }<span class="op">;</span></span></code></pre></div>
+<h2 id="literal-types">Literal Types</h2>
+<p>✨ In TypeScript, a literal type is a type that represents exactly
+one value. For example, the literal type <code>"hello"</code> only
+represents the string <code>"hello"</code>. Similarly, <code>2</code> is
+a numeric literal type that only represents the number <code>2</code>.
+Literal types are often used in conjunction with union types to describe
+a value that can be a set of specific strings or numbers.</p>
+<p>⚒️ Literal types are used when you want to restrict a value to a
+specific set of possibilities. They are often used in situations where a
+variable can only take on a limited number of known values.</p>
+<p>💡Literal types help to make your code more type-safe by restricting
+the possible values a variable can take. This can help to catch
+potential bugs at compile-time rather than at runtime.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// String literal type</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Direction <span class="op">=</span> <span class="st">&quot;north&quot;</span> <span class="op">|</span> <span class="st">&quot;east&quot;</span> <span class="op">|</span> <span class="st">&quot;south&quot;</span> <span class="op">|</span> <span class="st">&quot;west&quot;</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Numeric literal type</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> DiceRoll <span class="op">=</span> <span class="dv">1</span> <span class="op">|</span> <span class="dv">2</span> <span class="op">|</span> <span class="dv">3</span> <span class="op">|</span> <span class="dv">4</span> <span class="op">|</span> <span class="dv">5</span> <span class="op">|</span> <span class="dv">6</span><span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">// Boolean literal type</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> HasSides <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">move</span>(distance<span class="op">:</span> <span class="dt">number</span><span class="op">,</span> direction<span class="op">:</span> Direction) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`Moving </span><span class="sc">${</span>distance<span class="sc">}</span><span class="vs"> meters </span><span class="sc">${</span>direction<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">move</span>(<span class="dv">10</span><span class="op">,</span> <span class="st">&quot;north&quot;</span>)<span class="op">;</span> <span class="co">// ok</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">move</span>(<span class="dv">10</span><span class="op">,</span> <span class="st">&quot;down&quot;</span>)<span class="op">;</span> <span class="co">// error</span></span></code></pre></div>
+<h3 id="literal-types-for-returns">Literal Types For Returns</h3>
+<p>✨ Literal Types For Returns refers to the practice of using literal
+types as the return type of a function. This means that the function is
+expected to return a specific, singular value.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Direction <span class="op">=</span> <span class="st">&quot;north&quot;</span> <span class="op">|</span> <span class="st">&quot;south&quot;</span> <span class="op">|</span> <span class="st">&quot;east&quot;</span> <span class="op">|</span> <span class="st">&quot;west&quot;</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">getDirection</span>()<span class="op">:</span> Direction {</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="st">&quot;north&quot;</span><span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> LiteralFunction <span class="op">=</span> (a<span class="op">:</span> <span class="dt">number</span><span class="op">,</span> b<span class="op">:</span> <span class="dt">number</span>) <span class="kw">=&gt;</span> <span class="dt">number</span><span class="op">;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> add<span class="op">:</span> LiteralFunction <span class="op">=</span> (a<span class="op">,</span> b) <span class="kw">=&gt;</span> a <span class="op">+</span> b<span class="op">;</span></span></code></pre></div>
+<h2 id="index-signatures">Index Signatures</h2>
+<p>✨ In TypeScript, an index signature is a way to define a type that
+allows for any property name on an object to be used as a key to access
+a property value. It’s a way to describe types of objects that are not
+known at design time.</p>
+<p>⚒️ Index signatures are used when you want to create objects that
+have some set of properties that are not known until runtime. They are
+often used when working with objects that act as dictionaries or
+maps.</p>
+<p>💡 Index signatures provide a way to define the type of an object
+that can have any number of properties of a certain type. Without index
+signatures, it would be difficult to describe the types of these kinds
+of objects in TypeScript.</p>
+<ul>
+<li><p>String Index Signature:
+<code>type StringIndexSignature = { [key: string]: string };</code></p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> StringIndexSignature <span class="op">=</span> { [key<span class="op">:</span> <span class="dt">string</span>]<span class="op">:</span> <span class="dt">string</span> }<span class="op">;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> obj<span class="op">:</span> StringIndexSignature <span class="op">=</span> {</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  name<span class="op">:</span> <span class="st">&quot;John&quot;</span><span class="op">,</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  age<span class="op">:</span> <span class="st">&quot;30&quot;</span><span class="op">,</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  city<span class="op">:</span> <span class="st">&quot;New York&quot;</span><span class="op">,</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div></li>
+<li><p>Number Index Signature:
+<code>type NumberIndexSignature = { [key: number]: string };</code></p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> NumberIndexSignature <span class="op">=</span> { [key<span class="op">:</span> <span class="dt">number</span>]<span class="op">:</span> <span class="dt">string</span> }<span class="op">;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> obj<span class="op">:</span> NumberIndexSignature <span class="op">=</span> {</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="dv">0</span><span class="op">:</span> <span class="st">&quot;Sizar&quot;</span><span class="op">,</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span><span class="op">:</span> <span class="st">&quot;30&quot;</span><span class="op">,</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span><span class="op">:</span> <span class="st">&quot;New York&quot;</span><span class="op">,</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div></li>
+<li><p>Mixed Index Signature:
+<code>type MixedIndexSignature = { [key: string]: string | number };</code></p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> MixedIndexSignature <span class="op">=</span> { [key<span class="op">:</span> <span class="dt">string</span>]<span class="op">:</span> <span class="dt">string</span> <span class="op">|</span> <span class="dt">number</span> }<span class="op">;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> obj<span class="op">:</span> MixedIndexSignature <span class="op">=</span> {</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  name<span class="op">:</span> <span class="st">&quot;Sizar&quot;</span><span class="op">,</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  age<span class="op">:</span> <span class="dv">30</span><span class="op">,</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  city<span class="op">:</span> <span class="st">&quot;New York&quot;</span><span class="op">,</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div></li>
+<li><p>Index Signature for Function Return Types :
+<code>type FunctionIndexSignature = { [key: string]: () =&gt; string };</code></p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> FunctionIndexSignature <span class="op">=</span> { [key<span class="op">:</span> <span class="dt">string</span>]<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="dt">string</span> }<span class="op">;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> obj<span class="op">:</span> FunctionIndexSignature <span class="op">=</span> {</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  name<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="st">&quot;Sizar&quot;</span><span class="op">,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  age<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="st">&quot;30&quot;</span><span class="op">,</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  city<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="st">&quot;New York&quot;</span><span class="op">,</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div></li>
+<li><p>Index Signature with readonly Modifier:
+<code>type ReadonlyIndexSignature = { readonly [key: string]: string };</code></p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> ReadonlyIndexSignature <span class="op">=</span> { <span class="kw">readonly</span> [key<span class="op">:</span> <span class="dt">string</span>]<span class="op">:</span> <span class="dt">string</span> }<span class="op">;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> obj<span class="op">:</span> ReadonlyIndexSignature <span class="op">=</span> {</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  name<span class="op">:</span> <span class="st">&quot;Sizar&quot;</span><span class="op">,</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  age<span class="op">:</span> <span class="st">&quot;30&quot;</span><span class="op">,</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  city<span class="op">:</span> <span class="st">&quot;New York&quot;</span><span class="op">,</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>obj<span class="op">.</span><span class="at">name</span> <span class="op">=</span> <span class="st">&quot;Jane&quot;</span><span class="op">;</span> <span class="co">// error</span></span></code></pre></div></li>
+</ul>
+<h2 id="typeof-operator"><code>typeof</code> Operator</h2>
+<p>✨ The <code>typeof</code> operator is a unary operator that returns
+a string indicating the type of the unevaluated operand. In JavaScript,
+it can return “<code>number</code>”, “<code>string</code>”,
+“<code>boolean</code>”, “<code>undefined</code>”,
+“<code>function</code>”, “<code>object</code>”, “<code>symbol</code>”,
+or “<code>bigint</code>”. In TypeScript, <code>typeof</code> can also be
+used as a type query operator to obtain the type of a variable,
+property, or other value.</p>
+<p>⚒️ The <code>typeof</code> operator helps to make your code more
+robust by allowing you to check the type of a variable before performing
+operations on it. In TypeScript, it allows you to create types based on
+the types of existing variables, which can help to reduce redundancy and
+improve type safety.</p>
+<ul>
+<li><p>Person Type Alias: If you have a <code>person</code> object, you
+can create a <code>Person</code> type that has the same structure as the
+person object.</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> person <span class="op">=</span> {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  name<span class="op">:</span> <span class="st">&quot;Sizar&quot;</span><span class="op">,</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  age<span class="op">:</span> <span class="dv">30</span><span class="op">,</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Person <span class="op">=</span> <span class="kw">typeof</span> person<span class="op">;</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> person_x<span class="op">:</span> Person <span class="op">=</span> {</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  name<span class="op">:</span> <span class="st">&quot;Sizar&quot;</span><span class="op">,</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  age<span class="op">:</span> <span class="dv">30</span><span class="op">,</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  motto<span class="op">:</span> <span class="st">&quot;Hello World&quot;</span><span class="op">,</span> <span class="co">// error</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div></li>
+<li><p>Function Type Alias: If you have a <code>log</code> function, you
+can create a <code>Log</code> type that has the same structure as the
+log function.</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> log <span class="op">=</span> (message<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(message)<span class="op">;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Log <span class="op">=</span> <span class="kw">typeof</span> log<span class="op">;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> log_x<span class="op">:</span> Log <span class="op">=</span> (message<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(message)<span class="op">;</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(message)<span class="op">;</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div></li>
+<li><p>Enum Type Alias: If you have a <code>Direction</code> enum, you
+can create a <code>DirectionType</code> type that has the same structure
+as the <code>Direction</code> enum.</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> Direction {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  North<span class="op">,</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  South<span class="op">,</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  East<span class="op">,</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  West<span class="op">,</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> DirectionType <span class="op">=</span> <span class="kw">typeof</span> Direction<span class="op">;</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> direction<span class="op">:</span> DirectionType <span class="op">=</span> {</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  North<span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  South<span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  East<span class="op">:</span> <span class="dv">2</span><span class="op">,</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  West<span class="op">:</span> <span class="dv">3</span><span class="op">,</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div></li>
+</ul>
+<h2 id="indexed-types">Indexed Types</h2>
+<p>✨ In TypeScript, indexed types (also known as indexed access types
+or lookup types) allow you to get the type of a property at a specific
+index of a type. This is particularly useful when working with tuple or
+array types, or types with a known set of properties.</p>
+<p>⚒️ Indexed types are used when you want to get the type of a property
+at a specific index of a type. They are often used when working with
+tuple or array types, or types with a known set of properties.</p>
+<p>💡 Indexed types help to make your code more type-safe by allowing
+you to get the type of a property at a specific index of a type. This
+can help to catch potential bugs at compile-time rather than at
+runtime.</p>
+<ul>
+<li><p>Accessing Tuple Types:
+<code>type First = [string, number][0];</code></p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> TupleType <span class="op">=</span> [<span class="dt">string</span><span class="op">,</span> <span class="dt">number</span><span class="op">,</span> <span class="dt">boolean</span>]<span class="op">;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> First <span class="op">=</span> TupleType[<span class="dv">0</span>]<span class="op">;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> first<span class="op">:</span> First <span class="op">=</span> <span class="st">&quot;Sizar&quot;</span><span class="op">;</span></span></code></pre></div></li>
+<li><p>Accessing Array Types: <code>type First = string[];</code></p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> First <span class="op">=</span> <span class="dt">string</span>[]<span class="op">;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> first<span class="op">:</span> First <span class="op">=</span> [<span class="st">&quot;Sizar&quot;</span><span class="op">,</span> <span class="st">&quot;30&quot;</span>]<span class="op">;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> ArrayType <span class="op">=</span> <span class="dt">number</span>[]<span class="op">;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> ElementType <span class="op">=</span> ArrayType[<span class="dt">number</span>]<span class="op">;</span></span></code></pre></div></li>
+<li><p>Accessing Object Property Types:
+<code>type First = { name: string }["name"];</code></p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> First <span class="op">=</span> { name<span class="op">:</span> <span class="dt">string</span> }[<span class="st">&quot;name&quot;</span>]<span class="op">;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> first<span class="op">:</span> First <span class="op">=</span> <span class="st">&quot;Sizar&quot;</span><span class="op">;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> ObjectType <span class="op">=</span> { name<span class="op">:</span> <span class="dt">string</span><span class="op">;</span> age<span class="op">:</span> <span class="dt">number</span> }<span class="op">;</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> NameType <span class="op">=</span> ObjectType[<span class="st">&quot;name&quot;</span>]<span class="op">;</span> <span class="co">// string</span></span></code></pre></div></li>
+<li><p>Using with <code>keyof</code>:
+<code>type First = keyof { name: string };</code> You can use indexed
+types to access the type of a specific property of an object type.</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> First <span class="op">=</span> <span class="kw">keyof</span> { name<span class="op">:</span> <span class="dt">string</span> }<span class="op">;</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> first<span class="op">:</span> First <span class="op">=</span> <span class="st">&quot;name&quot;</span><span class="op">;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> ObjectType <span class="op">=</span> { name<span class="op">:</span> <span class="dt">string</span><span class="op">;</span> age<span class="op">:</span> <span class="dt">number</span> }<span class="op">;</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> AnyPropertyType <span class="op">=</span> ObjectType[<span class="kw">keyof</span> ObjectType]<span class="op">;</span> <span class="co">// string | number</span></span></code></pre></div></li>
+<li><p>Using with <code>typeof</code>:
+<code>type First = typeof person["name"];</code></p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> person <span class="op">=</span> {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  name<span class="op">:</span> <span class="st">&quot;Sizar&quot;</span><span class="op">,</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  age<span class="op">:</span> <span class="dv">30</span><span class="op">,</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> First <span class="op">=</span> (<span class="kw">typeof</span> person)[<span class="st">&quot;name&quot;</span>]<span class="op">;</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> first<span class="op">:</span> First <span class="op">=</span> <span class="st">&quot;Sizar&quot;</span><span class="op">;</span></span></code></pre></div></li>
+</ul>
+<h2 id="keyof-operator"><code>keyof</code> Operator</h2>
+<p>✨ The <code>keyof</code> operator in TypeScript is a type operator
+that produces a string or numeric literal union of the keys of an object
+type. It’s used to capture the property names of an object type as a
+literal union type.</p>
+<p>⚒️ <code>keyof</code> is used when you want to create a type that
+represents the keys of another type. It’s often used in conjunction with
+indexed types to create types that are based on the properties of
+existing types.</p>
+<ul>
+<li><p>Creating Key Types:
+<code>type Keys = keyof { name: string; age: number };</code></p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Keys <span class="op">=</span> <span class="kw">keyof</span> { name<span class="op">:</span> <span class="dt">string</span><span class="op">;</span> age<span class="op">:</span> <span class="dt">number</span> }<span class="op">;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> keys<span class="op">:</span> Keys <span class="op">=</span> <span class="st">&quot;name&quot;</span><span class="op">;</span></span></code></pre></div></li>
+<li><p>Object Property Type Alias: This is a <code>keyof</code> type
+used with an indexed type to get the type of a specific property of an
+object type.</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> ObjectType <span class="op">=</span> { name<span class="op">:</span> <span class="dt">string</span><span class="op">;</span> age<span class="op">:</span> <span class="dt">number</span> }<span class="op">;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> NameType <span class="op">=</span> ObjectType[<span class="kw">keyof</span> ObjectType]<span class="op">;</span> <span class="co">// string | number</span></span></code></pre></div></li>
+<li><p>Function Property Keys Type Alias: This is a <code>keyof</code>
+type that gets the keys of a function’s properties.</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> FunctionProperties <span class="op">=</span> <span class="kw">keyof</span> <span class="bu">Function</span><span class="op">;</span> <span class="co">// &quot;apply&quot; | &quot;arguments&quot; | &quot;bind&quot; | &quot;call&quot; | &quot;caller&quot; | &quot;length&quot; | &quot;name&quot; | &quot;toString&quot; | &quot;prototype&quot;</span></span></code></pre></div></li>
+</ul>
+<h2 id="generic-type-arguments">Generic Type Arguments</h2>
+<p>✨ In TypeScript, generic type arguments allow you to write reusable
+code that can work over a variety of types, rather than a single one.
+They are a way of defining functions, classes, or interfaces that can
+operate on different types, while still maintaining type safety.</p>
+<p>⚒️ Generic type arguments are used when you want to create reusable
+components that can work with any type, but still maintain type safety.
+They are often used in functions, classes, and interfaces.</p>
+<p>🧵 The syntax for generic type arguments involves using angled
+brackets (<code>&lt;</code> and <code>&gt;</code>). Inside these
+brackets, you place a placeholder type (often <code>T</code> by
+convention, but it can be any valid identifier). This placeholder type
+can then be used as a type within the function, class, or interface.</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">identity</span><span class="op">&lt;</span>T<span class="op">&gt;</span>(arg<span class="op">:</span> T)<span class="op">:</span> T {</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> arg<span class="op">;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<ul>
+<li><p>Naming: While <code>T</code> is a common placeholder name, you
+can use any valid identifier. If your generic takes multiple type
+arguments, it’s common to use <code>T</code>, <code>U</code>,
+<code>V</code>, etc.</p></li>
+<li><p>Using Multiple Type Variables: You can use multiple type
+variables in a generic to work with functions or methods that take two
+or more arguments of different types.</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">identity</span><span class="op">&lt;</span>T<span class="op">,</span> U<span class="op">&gt;</span>(arg1<span class="op">:</span> T<span class="op">,</span> arg2<span class="op">:</span> U)<span class="op">:</span> [T<span class="op">,</span> U] {</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> [arg1<span class="op">,</span> arg2]<span class="op">;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<li><p>Using Type Constraints: You can use type constraints in a generic
+to restrict the types that can be used with it. This is done by using
+the <code>extends</code> keyword.</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">identity</span><span class="op">&lt;</span>T <span class="kw">extends</span> <span class="dt">string</span><span class="op">&gt;</span>(arg<span class="op">:</span> T)<span class="op">:</span> T {</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> arg<span class="op">;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+</ul>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> data <span class="op">=</span> [</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&quot;John&quot;</span><span class="op">,</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    age<span class="op">:</span> <span class="dv">25</span><span class="op">,</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&quot;Jane&quot;</span><span class="op">,</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    age<span class="op">:</span> <span class="dv">24</span><span class="op">,</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>]<span class="op">;</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Status <span class="op">=</span> <span class="st">&quot;ok&quot;</span> <span class="op">|</span> <span class="st">&quot;error&quot;</span> <span class="op">|</span> <span class="st">&quot;unauthorized&quot;</span> <span class="op">|</span> <span class="st">&quot;unauthenticated&quot;</span><span class="op">;</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Count <span class="op">=</span> <span class="dt">number</span><span class="op">;</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> createResponse <span class="op">=</span> <span class="op">&lt;</span>T<span class="op">&gt;</span>(status<span class="op">:</span> Status<span class="op">,</span> data<span class="op">:</span> T<span class="op">,</span> count<span class="op">:</span> Count) <span class="kw">=&gt;</span> {</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> {</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    status<span class="op">,</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>    data<span class="op">,</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    count<span class="op">,</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> response <span class="op">=</span> <span class="fu">createResponse</span>(<span class="st">&quot;unauthenticated&quot;</span><span class="op">,</span> data<span class="op">,</span> data<span class="op">.</span><span class="at">length</span>)<span class="op">;</span></span></code></pre></div>
+<h3 id="multiple-generic-arguments">Multiple Generic Arguments</h3>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">pair</span><span class="op">&lt;</span>T<span class="op">,</span> U<span class="op">&gt;</span>(first<span class="op">:</span> T<span class="op">,</span> second<span class="op">:</span> U)<span class="op">:</span> [T<span class="op">,</span> U] {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> [first<span class="op">,</span> second]<span class="op">;</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> result <span class="op">=</span> <span class="fu">pair</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">,</span> <span class="dt">number</span><span class="op">&gt;</span>(<span class="st">&quot;apple&quot;</span><span class="op">,</span> <span class="dv">10</span>)<span class="op">;</span></span></code></pre></div>
+<h2 id="generic-function-arguments">Generic Function Arguments</h2>
+<p>“Generic Type Arguments” and “Generic Function Arguments” are related
+concepts, but they refer to slightly different things:</p>
+<ul>
+<li>Generic Type Arguments refer to the types that you pass to a generic
+function, class, or interface. For example, in
+<code>Array&lt;number&gt;</code>, <code>number</code> is a generic type
+argument.</li>
+<li>Generic Function Arguments refer to the actual values that you pass
+to a generic function. For example, in
+<code>identity&lt;number&gt;(123)</code>, <code>123</code> is a generic
+function argument.</li>
+</ul>
+<p>✨ Generic Function Arguments in TypeScript refers to the use of type
+variables as arguments in a function. This allows the function to handle
+a variety of types while maintaining type safety. The type variable is
+defined in the function declaration and can be used to type the
+function’s arguments and return value.</p>
+<p>⚒️ Use Generic Function Arguments when you want to write a function
+that can handle a variety of types, but you still want to maintain type
+safety. This is useful when you want to write reusable code.</p>
+<ul>
+<li><p>Generic Identity Function:</p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">identity</span><span class="op">&lt;</span>T<span class="op">&gt;</span>(arg<span class="op">:</span> T)<span class="op">:</span> T {</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> arg<span class="op">;</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<li><p>Generic Array Function:</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">createArray</span><span class="op">&lt;</span>T<span class="op">&gt;</span>(length<span class="op">:</span> <span class="dt">number</span><span class="op">,</span> value<span class="op">:</span> T)<span class="op">:</span> <span class="bu">Array</span><span class="op">&lt;</span>T<span class="op">&gt;</span> {</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> result<span class="op">:</span> T[] <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> length<span class="op">;</span> i<span class="op">++</span>) {</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    result[i] <span class="op">=</span> value<span class="op">;</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> array <span class="op">=</span> <span class="fu">createArray</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span>(<span class="dv">3</span><span class="op">,</span> <span class="st">&quot;x&quot;</span>)<span class="op">;</span></span></code></pre></div></li>
+<li><p>Generic Property Function:</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">getProperty</span><span class="op">&lt;</span>T<span class="op">,</span> K <span class="kw">extends</span> <span class="kw">keyof</span> T<span class="op">&gt;</span>(obj<span class="op">:</span> T<span class="op">,</span> key<span class="op">:</span> K) {</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> obj[key]<span class="op">;</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> person <span class="op">=</span> { name<span class="op">:</span> <span class="st">&quot;Sizar&quot;</span><span class="op">,</span> age<span class="op">:</span> <span class="dv">30</span> }<span class="op">;</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> name <span class="op">=</span> <span class="fu">getProperty</span>(person<span class="op">,</span> <span class="st">&quot;name&quot;</span>)<span class="op">;</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> age <span class="op">=</span> <span class="fu">getProperty</span>(person<span class="op">,</span> <span class="st">&quot;age&quot;</span>)<span class="op">;</span></span></code></pre></div></li>
+</ul>
+<h2 id="generic-type-constraints">Generic Type Constraints</h2>
+<p>✨ Generic type constraints allow you to restrict the types that can
+be used with a generic type. This is done by using the
+<code>extends</code> keyword to specify that a type must extend a
+certain type or implement a certain interface.</p>
+<p>⚒️ Generic type constraints are used when you want to restrict the
+types that can be used with a generic type. They are often used in
+functions, classes, and interfaces to ensure that the types used with
+them meet certain requirements.</p>
+<ul>
+<li><p>Use the <code>extends</code> keyword to define a constraint.</p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">identity</span><span class="op">&lt;</span>T <span class="kw">extends</span> <span class="dt">string</span><span class="op">&gt;</span>(arg<span class="op">:</span> T)<span class="op">:</span> T {</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> arg<span class="op">;</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<li><p>Use an interface to define a constraint.</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> HasLength {</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  length<span class="op">:</span> <span class="dt">number</span><span class="op">;</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">identity</span><span class="op">&lt;</span>T <span class="kw">extends</span> HasLength<span class="op">&gt;</span>(arg<span class="op">:</span> T)<span class="op">:</span> T {</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(arg<span class="op">.</span><span class="at">length</span>)<span class="op">;</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> arg<span class="op">;</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<li><p>Use multiple constraints by using an intersection type.</p>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> HasLength {</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  length<span class="op">:</span> <span class="dt">number</span><span class="op">;</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> HasName {</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  name<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">identity</span><span class="op">&lt;</span>T <span class="kw">extends</span> HasLength <span class="op">&amp;</span> HasName<span class="op">&gt;</span>(arg<span class="op">:</span> T)<span class="op">:</span> T {</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(arg<span class="op">.</span><span class="at">length</span>)<span class="op">;</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(arg<span class="op">.</span><span class="at">name</span>)<span class="op">;</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> arg<span class="op">;</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+</ul>
+<h2 id="default-generic-arguments">Default Generic Arguments</h2>
+<p>✨ Default generic arguments in TypeScript allow you to specify a
+default type for a generic type parameter. This means that if a type
+argument is not provided when using the generic type, the default type
+will be used instead.</p>
+<p>⚒️ Default generic arguments are used when you want to provide a
+default type for a generic type parameter. They are often used in
+functions, classes, and interfaces to provide a default type for a type
+parameter.</p>
+<ul>
+<li><p>Default Generic Argument in a Function:</p>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">defaultArgFunction</span><span class="op">&lt;</span>T <span class="op">=</span> <span class="dt">number</span><span class="op">&gt;</span>(arg<span class="op">:</span> T)<span class="op">:</span> T {</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> arg<span class="op">;</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> output <span class="op">=</span> <span class="fu">defaultArgFunction</span>(<span class="st">&quot;myString&quot;</span>)<span class="op">;</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> defaultOutput <span class="op">=</span> <span class="fu">defaultArgFunction</span>()<span class="op">;</span></span></code></pre></div></li>
+<li><p>Default Generic Argument with Multiple Types:</p>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">defaultArgsFunction</span><span class="op">&lt;</span>T <span class="op">=</span> <span class="dt">number</span><span class="op">,</span> U <span class="op">=</span> <span class="dt">string</span><span class="op">&gt;</span>(</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  arg1<span class="op">:</span> T<span class="op">,</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  arg2<span class="op">:</span> U</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>)<span class="op">:</span> [T<span class="op">,</span> U] {</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> [arg1<span class="op">,</span> arg2]<span class="op">;</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> output <span class="op">=</span> <span class="fu">defaultArgsFunction</span><span class="op">&lt;</span><span class="dt">boolean</span><span class="op">,</span> <span class="dt">boolean</span><span class="op">&gt;</span>(<span class="kw">true</span><span class="op">,</span> <span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> defaultOutput <span class="op">=</span> <span class="fu">defaultArgsFunction</span>()<span class="op">;</span> <span class="co">// T is number, U is string</span></span></code></pre></div></li>
+</ul>
+<h2 id="mapped-object-types">Mapped Object Types</h2>
+<p>✨ Mapped Object Types in TypeScript are a way to create new types
+from old ones by transforming properties. They are defined by the syntax
+<code>{ [K in Keys]: Type }</code>. Here, Keys can be a type
+representing a set of strings or numbers (like <code>"a" | "b"</code>),
+and <code>Type</code> is the type to be transformed.</p>
+<p>⚒️ Use Mapped Object Types when you want to create a new type based
+on the properties of an existing type, especially when you want to apply
+a certain transformation to the properties of the existing type.</p>
+<p>💡 Mapped Object Types help to make your code more reusable and
+maintainable by allowing you to create new types based on the properties
+of existing types. They are often used in situations where you want to
+create a new type that is similar to an existing type, but with some
+modifications.</p>
+<ul>
+<li><p>Making All Properties Readonly:</p>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="bu">Readonly</span><span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">=</span> {</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">readonly</span> [K <span class="kw">in</span> <span class="kw">keyof</span> T]<span class="op">:</span> T[K]<span class="op">;</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> person<span class="op">:</span> <span class="bu">Readonly</span><span class="op">&lt;</span>{ name<span class="op">:</span> <span class="dt">string</span><span class="op">;</span> age<span class="op">:</span> <span class="dt">number</span> }<span class="op">&gt;</span> <span class="op">=</span> {</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  name<span class="op">:</span> <span class="st">&quot;Sizar&quot;</span><span class="op">,</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  age<span class="op">:</span> <span class="dv">30</span><span class="op">,</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div></li>
+<li><p>Making All Properties Optional:</p>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="bu">Partial</span><span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">=</span> {</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  [K <span class="kw">in</span> <span class="kw">keyof</span> T]<span class="op">?:</span> T[K]<span class="op">;</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> person<span class="op">:</span> <span class="bu">Partial</span><span class="op">&lt;</span>{ name<span class="op">:</span> <span class="dt">string</span><span class="op">;</span> age<span class="op">:</span> <span class="dt">number</span> }<span class="op">&gt;</span> <span class="op">=</span> {</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  name<span class="op">:</span> <span class="st">&quot;Sizar&quot;</span><span class="op">,</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div></li>
+<li><p>Picking Certain Properties from a Type:</p>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="bu">Pick</span><span class="op">&lt;</span>T<span class="op">,</span> K <span class="kw">extends</span> <span class="kw">keyof</span> T<span class="op">&gt;</span> <span class="op">=</span> {</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  [P <span class="kw">in</span> K]<span class="op">:</span> T[P]<span class="op">;</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> person<span class="op">:</span> <span class="bu">Pick</span><span class="op">&lt;</span>{ name<span class="op">:</span> <span class="dt">string</span><span class="op">;</span> age<span class="op">:</span> <span class="dt">number</span> }<span class="op">,</span> <span class="st">&quot;name&quot;</span><span class="op">&gt;</span> <span class="op">=</span> {</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  name<span class="op">:</span> <span class="st">&quot;Sizar&quot;</span><span class="op">,</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div></li>
+<li><p>Removing Certain Properties from a Type:</p>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="bu">Omit</span><span class="op">&lt;</span>T<span class="op">,</span> K <span class="kw">extends</span> <span class="kw">keyof</span> T<span class="op">&gt;</span> <span class="op">=</span> <span class="bu">Pick</span><span class="op">&lt;</span>T<span class="op">,</span> <span class="bu">Exclude</span><span class="op">&lt;</span><span class="kw">keyof</span> T<span class="op">,</span> K<span class="op">&gt;&gt;;</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> person<span class="op">:</span> <span class="bu">Omit</span><span class="op">&lt;</span>{ name<span class="op">:</span> <span class="dt">string</span><span class="op">;</span> age<span class="op">:</span> <span class="dt">number</span> }<span class="op">,</span> <span class="st">&quot;name&quot;</span><span class="op">&gt;</span> <span class="op">=</span> {</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  age<span class="op">:</span> <span class="dv">30</span><span class="op">,</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div></li>
+</ul>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> ProductCategories <span class="op">=</span> {</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  electronics<span class="op">:</span> <span class="st">&quot;Electronics&quot;</span><span class="op">;</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  clothing<span class="op">:</span> <span class="st">&quot;Clothing&quot;</span><span class="op">;</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  books<span class="op">:</span> <span class="st">&quot;Books&quot;</span><span class="op">;</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> ProductCategoryInfo<span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">=</span> {</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  [K <span class="kw">in</span> <span class="kw">keyof</span> T]<span class="op">:</span> T[K]<span class="op">;</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Example <span class="op">=</span> ProductCategoryInfo<span class="op">&lt;</span>ProductCategories<span class="op">&gt;;</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a><span class="co">// `ProductCategories` and `Example` are indeed the same type. The `ProductCategoryInfo&lt;T&gt;` mapped type is essentially a pass-through that doesn&#39;t change the type in any way.</span></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a><span class="co">// The` ProductCategoryInfo&lt;T&gt;` mapped type might be more useful in a scenario where you want to apply some transformation to the properties of `T`. For example, if you wanted to make all properties optional, you could define `ProductCategoryInfo&lt;T&gt;`.</span></span></code></pre></div>
+<h2 id="type-unions">Type Unions</h2>
+<p>✨ A type union in TypeScript is a way to define a type that can be
+one of several different types. It’s a way to combine multiple types
+into a single type that can represent any of the individual types.</p>
+<p>⚒️ Use type unions when you want to define a type that can be one of
+several different types. They are often used in situations where a
+variable can take on multiple types, or when you want to create a more
+flexible type.</p>
+<ul>
+<li><p>Using Type Unions:</p>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> ID <span class="op">=</span> <span class="dt">string</span> <span class="op">|</span> <span class="dt">number</span><span class="op">;</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Name <span class="op">=</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Age <span class="op">=</span> <span class="dt">number</span><span class="op">;</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> User <span class="op">=</span> { id<span class="op">:</span> ID<span class="op">;</span> name<span class="op">:</span> Name<span class="op">;</span> age<span class="op">:</span> Age }<span class="op">;</span></span></code></pre></div></li>
+<li><p>Using Type Unions with Literal Types:</p>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Status <span class="op">=</span> <span class="st">&quot;ok&quot;</span> <span class="op">|</span> <span class="st">&quot;error&quot;</span> <span class="op">|</span> <span class="st">&quot;unauthorized&quot;</span> <span class="op">|</span> <span class="st">&quot;unauthenticated&quot;</span><span class="op">;</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Count <span class="op">=</span> <span class="dt">number</span><span class="op">;</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Response <span class="op">=</span> { status<span class="op">:</span> Status<span class="op">;</span> data<span class="op">:</span> <span class="dt">any</span><span class="op">;</span> count<span class="op">:</span> Count }<span class="op">;</span></span></code></pre></div></li>
+<li><p>Using Type Unions with Object Types:</p>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> User <span class="op">=</span> { id<span class="op">:</span> <span class="dt">string</span><span class="op">;</span> name<span class="op">:</span> <span class="dt">string</span> }<span class="op">;</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Admin <span class="op">=</span> { id<span class="op">:</span> <span class="dt">string</span><span class="op">;</span> role<span class="op">:</span> <span class="dt">string</span> }<span class="op">;</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Person <span class="op">=</span> User <span class="op">|</span> Admin<span class="op">;</span></span></code></pre></div></li>
+<li><p>Using Type Unions with Function Types:</p>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Callback <span class="op">=</span> (error<span class="op">:</span> <span class="bu">Error</span><span class="op">,</span> response<span class="op">:</span> <span class="dt">object</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> PromiseCallback <span class="op">=</span> (error<span class="op">:</span> <span class="bu">Error</span><span class="op">,</span> response<span class="op">:</span> <span class="dt">object</span>) <span class="kw">=&gt;</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;;</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> AnyCallback <span class="op">=</span> Callback <span class="op">|</span> PromiseCallback<span class="op">;</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> callback<span class="op">:</span> AnyCallback <span class="op">=</span> (error<span class="op">:</span> <span class="bu">Error</span><span class="op">,</span> response<span class="op">:</span> <span class="dt">object</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(error<span class="op">,</span> response)<span class="op">;</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div></li>
+<li><p>Using Type Unions with Generic Types:</p>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Container<span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">=</span> { value<span class="op">:</span> T }<span class="op">;</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> NumberContainer <span class="op">=</span> Container<span class="op">&lt;</span><span class="dt">number</span><span class="op">&gt;;</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> StringContainer <span class="op">=</span> Container<span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;;</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> AnyContainer <span class="op">=</span> NumberContainer <span class="op">|</span> StringContainer<span class="op">;</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> container<span class="op">:</span> AnyContainer <span class="op">=</span> { value<span class="op">:</span> <span class="st">&quot;hello&quot;</span> }<span class="op">;</span></span></code></pre></div></li>
+</ul>
+</body>
+</html>
