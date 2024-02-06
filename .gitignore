@@ -40,6 +40,8 @@ delete*
 
 draft.txt
 /draft.txt
+draft.md
+/draft.md
 
 node_modules/
 node_modules/*
