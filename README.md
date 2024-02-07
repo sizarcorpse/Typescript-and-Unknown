@@ -1,12 +1,8 @@
----
-title: TypeScript And Unknown
----
-
-# TypeScript
+# TypeScript and Unknown
 
 ## Table of Contents
 
-- [TypeScript](#typescript)
+- [TypeScript and Unknown](#typescript-and-unknown)
   - [Table of Contents](#table-of-contents)
   - [Primitive Data Types](#primitive-data-types)
   - [`type` Aliases](#type-aliases)

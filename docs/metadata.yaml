@@ -1,0 +1,24 @@
+---
+title: TypeScript and Unknown
+author: Sizar Corpse
+date: 2024-02-06
+description: A comprehensive guide to TypeScript, covering topics such as primitive data types, type aliases, literal types, index signatures, the typeof operator, indexed types, the keyof operator, generic type arguments, generic function arguments, generic type constraints, default generic arguments, mapped object types, and type unions.
+keywords:
+  - TypeScript
+  - Programming
+  - Software Development
+  - Primitive Data Types
+  - Type Aliases
+  - Literal Types
+  - Index Signatures
+  - Typeof Operator
+  - Indexed Types
+  - Keyof Operator
+  - Generic Type Arguments
+  - Generic Function Arguments
+  - Generic Type Constraints
+  - Default Generic Arguments
+  - Mapped Object Types
+  - Type Unions
+---
+
